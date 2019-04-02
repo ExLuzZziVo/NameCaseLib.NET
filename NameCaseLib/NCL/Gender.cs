@@ -1,20 +1,22 @@
 ﻿namespace NameCaseLib.NCL
 {
     /// <summary>
-    /// Перечеслиние пола человека
+    ///     Перечеслиние пола человека
     /// </summary>
     public enum Gender
     {
         /// <summary>
-        /// Пол не определен
+        ///     Пол не определен
         /// </summary>
         Null = 0,
+
         /// <summary>
-        /// Мужской пол
+        ///     Мужской пол
         /// </summary>
         Man = 1,
+
         /// <summary>
-        /// Женский пол
+        ///     Женский пол
         /// </summary>
         Woman = 2
     }

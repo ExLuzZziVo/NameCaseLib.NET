@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NameCaseLib.Core
+﻿namespace NameCaseLib.Core
 {
-    class LastCache
+    internal class LastCache
     {
-        public void Push(String letters, int length, int stopAfter)
+        public void Push(string letters, int length, int stopAfter)
         {
-
         }
 
-        public String Get(int length, int stopAfter)
+        public string Get(int length, int stopAfter)
         {
             return "";
         }

@@ -1,24 +1,27 @@
 ﻿namespace NameCaseLib.NCL
 {
     /// <summary>
-    /// Перечесление для идентификации типа слова
+    ///     Перечесление для идентификации типа слова
     /// </summary>
     public enum NamePart
     {
         /// <summary>
-        /// Слово не идентифицировано
+        ///     Слово не идентифицировано
         /// </summary>
         Null = 0,
+
         /// <summary>
-        /// Имя
+        ///     Имя
         /// </summary>
         FirstName = 1,
+
         /// <summary>
-        /// Фамилия
+        ///     Фамилия
         /// </summary>
         SecondName = 2,
+
         /// <summary>
-        /// Отчество
+        ///     Отчество
         /// </summary>
         FatherName = 3
     }

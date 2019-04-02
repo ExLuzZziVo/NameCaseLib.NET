@@ -1,80 +1,95 @@
-﻿using System;
+﻿#region
+
 using System.Reflection;
 using NameCaseLib.NCL;
+
+#endregion
+
 namespace NameCaseLib.Core
 {
     /// <summary>
-    /// Набор основных функций, который позволяют сделать интерфейс слонения русского и украниского языка
-    /// абсолютно одинаковым. Содержит все функции для внешнего взаимодействия с библиотекой.
+    ///     Набор основных функций, который позволяют сделать интерфейс слонения русского и украниского языка
+    ///     абсолютно одинаковым. Содержит все функции для внешнего взаимодействия с библиотекой.
     /// </summary>
     public abstract class Core
     {
         /// <summary>
-        /// Версия библиотеки
+        ///     Версия библиотеки
         /// </summary>
-        private static String version = "0.2/0.4.1";
+        private static readonly string version = "0.2/0.4.1";
 
         /// <summary>
-        /// Версия языкового файла
+        ///     Версия языкового файла
         /// </summary>
-        protected static String languageBuild;
+        protected static string languageBuild;
 
         /// <summary>
-        /// Готовность системы:
-        /// - Все слова идентифицированы (известо к какой части ФИО относится слово)
-        /// - У всех слов определен пол
-        /// Если все сделано стоит флаг true, при добавлении нового слова флаг сбрасывается на false
-        /// </summary>
-        private bool ready = false;
-
-        /// <summary>
-        /// Если все текущие слова было просклонены и в каждом слове уже есть результат склонения,
-        /// тогда true. Если было добавлено новое слово флаг збрасывается на false
-        /// </summary>
-        private bool finished = false;
-
-        /// <summary>
-        ///  Массив содержит елементы типа Word. Это все слова которые нужно обработать и просклонять
-        /// </summary>
-        private WordArray words;
-
-        /// <summary>
-        /// Переменная, в которую заносится слово с которым сейчас идет работа
-        /// </summary>
-        protected String workingWord;
-
-        /// <summary>
-        /// Метод Last() вырезает подстроки разной длины. Посколько одинаковых вызовов бывает несколько,
-        /// то все результаты выполнения кешируются в этом массиве.
-        /// </summary>
-        private LastCache workindLastCache;
-
-        /// <summary>
-        /// Номер последнего использованого правила, устанавливается методом Rule()
-        /// </summary>
-        private int lastRule = 0;
-
-        /// <summary>
-        /// Массив содержит результат склонения слова - слово во всех падежах
-        /// </summary>
-        protected String[] lastResult;
-
-        /// <summary>
-        /// Количество падежей в языке
+        ///     Количество падежей в языке
         /// </summary>
         protected int caseCount;
 
         /// <summary>
-        /// Метод очищает результаты последнего склонения слова. Нужен при склонении нескольких слов.
+        ///     Если все текущие слова было просклонены и в каждом слове уже есть результат склонения,
+        ///     тогда true. Если было добавлено новое слово флаг збрасывается на false
+        /// </summary>
+        private bool finished;
+
+        /// <summary>
+        ///     Массив содержит результат склонения слова - слово во всех падежах
+        /// </summary>
+        protected string[] lastResult;
+
+        /// <summary>
+        ///     Номер последнего использованого правила, устанавливается методом Rule()
+        /// </summary>
+        private int lastRule;
+
+        /// <summary>
+        ///     Готовность системы:
+        ///     - Все слова идентифицированы (известо к какой части ФИО относится слово)
+        ///     - У всех слов определен пол
+        ///     Если все сделано стоит флаг true, при добавлении нового слова флаг сбрасывается на false
+        /// </summary>
+        private bool ready;
+
+        /// <summary>
+        ///     Массив содержит елементы типа Word. Это все слова которые нужно обработать и просклонять
+        /// </summary>
+        private WordArray words;
+
+        /// <summary>
+        ///     Метод Last() вырезает подстроки разной длины. Посколько одинаковых вызовов бывает несколько,
+        ///     то все результаты выполнения кешируются в этом массиве.
+        /// </summary>
+        private LastCache workindLastCache;
+
+        /// <summary>
+        ///     Переменная, в которую заносится слово с которым сейчас идет работа
+        /// </summary>
+        protected string workingWord;
+
+
+        /// <summary>
+        ///     Возвращает текущую версию библиотке
+        /// </summary>
+        public static string Version => version;
+
+        /// <summary>
+        ///     Возвращает текущую версию языкового файла
+        /// </summary>
+        public static string LanguageVersion => version;
+
+        /// <summary>
+        ///     Метод очищает результаты последнего склонения слова. Нужен при склонении нескольких слов.
         /// </summary>
         private void Reset()
         {
             lastRule = 0;
-            lastResult = new String[caseCount];
+            lastResult = new string[caseCount];
         }
 
         /// <summary>
-        /// Устанавливает флаги о том, что система не готово и слова еще не были просклонены
+        ///     Устанавливает флаги о том, что система не готово и слова еще не были просклонены
         /// </summary>
         private void NotReady()
         {
@@ -83,8 +98,8 @@ namespace NameCaseLib.Core
         }
 
         /// <summary>
-        /// Сбрасывает все информацию на начальную. Очищает все слова добавленые в систему.
-        /// После выполнения система готова работать с начала. 
+        ///     Сбрасывает все информацию на начальную. Очищает все слова добавленые в систему.
+        ///     После выполнения система готова работать с начала.
         /// </summary>
         public Core FullReset()
         {
@@ -95,7 +110,7 @@ namespace NameCaseLib.Core
         }
 
         /// <summary>
-        /// Устанавливает последнее правило
+        ///     Устанавливает последнее правило
         /// </summary>
         /// <param name="ruleID">Правило</param>
         protected void Rule(int ruleID)
@@ -104,7 +119,7 @@ namespace NameCaseLib.Core
         }
 
         /// <summary>
-        /// Считывает и устанавливает последние правило
+        ///     Считывает и устанавливает последние правило
         /// </summary>
         protected int GetRule()
         {
@@ -112,10 +127,10 @@ namespace NameCaseLib.Core
         }
 
         /// <summary>
-        /// Устанавливает слово текущим для работы системы. Очищает кеш слова.
+        ///     Устанавливает слово текущим для работы системы. Очищает кеш слова.
         /// </summary>
         /// <param name="word">слово, которое нужно установить</param>
-        protected void SetWorkingWord(String word)
+        protected void SetWorkingWord(string word)
         {
             Reset();
             workingWord = word;
@@ -123,115 +138,98 @@ namespace NameCaseLib.Core
         }
 
         /// <summary>
-        /// Если не нужно склонять слово, делает результат таким же как и именительный падеж
+        ///     Если не нужно склонять слово, делает результат таким же как и именительный падеж
         /// </summary>
         protected void MakeResultTheSame()
         {
-            lastResult = new String[caseCount];
-            for (int i = 0; i < caseCount; i++)
-            {
-                lastResult[i] = workingWord;
-            }
+            lastResult = new string[caseCount];
+            for (var i = 0; i < caseCount; i++) lastResult[i] = workingWord;
         }
 
         /// <summary>
-        /// Вырезает определенное количество последних букв текущего слова
+        ///     Вырезает определенное количество последних букв текущего слова
         /// </summary>
         /// <param name="length">Количество букв</param>
         /// <returns>Подстроку содержущую определенное количество букв</returns>
-        protected String Last(int length)
+        protected string Last(int length)
         {
-            String result = workindLastCache.Get(length, length);
+            var result = workindLastCache.Get(length, length);
             if (result == "")
             {
-                int startIndex = workingWord.Length - length;
+                var startIndex = workingWord.Length - length;
                 if (startIndex >= 0)
-                {
                     result = workingWord.Substring(workingWord.Length - length, length);
-                }
                 else
-                {
-                    result = workingWord;  
-                }
+                    result = workingWord;
                 workindLastCache.Push(result, length, length);
             }
+
             return result;
         }
 
         /// <summary>
-        /// Получает указаное количество букв с конца слова
+        ///     Получает указаное количество букв с конца слова
         /// </summary>
         /// <param name="word">Слово</param>
         /// <param name="length">Количество букв</param>
         /// <returns>Полученая строка</returns>
-        protected String Last(String word, int length)
+        protected string Last(string word, int length)
         {
-            String result;
+            string result;
 
-            int startIndex = word.Length - length;
+            var startIndex = word.Length - length;
             if (startIndex >= 0)
-            {
                 result = word.Substring(word.Length - length, length);
-            }
             else
-            {
                 result = word;
-            }
 
             return result;
         }
 
         /// <summary>
-        /// Вырезает stopAfter букв начиная с length с конца
+        ///     Вырезает stopAfter букв начиная с length с конца
         /// </summary>
         /// <param name="length">На сколько букв нужно оступить от конца</param>
         /// <param name="stopAfter">Сколько букв нужно вырезать</param>
         /// <returns>Искомоя строка</returns>
-        protected String Last(int length, int stopAfter)
+        protected string Last(int length, int stopAfter)
         {
-            String result = workindLastCache.Get(length, stopAfter);
+            var result = workindLastCache.Get(length, stopAfter);
             if (result == "")
             {
-                int startIndex = workingWord.Length - length;
+                var startIndex = workingWord.Length - length;
                 if (startIndex >= 0)
-                {
                     result = workingWord.Substring(workingWord.Length - length, stopAfter);
-                }
                 else
-                {
                     result = workingWord;
-                }
                 workindLastCache.Push(result, length, stopAfter);
             }
+
             return result;
         }
 
         /// <summary>
-        /// Извлекает последние буквы из указаного слова
+        ///     Извлекает последние буквы из указаного слова
         /// </summary>
         /// <param name="word">Слово</param>
         /// <param name="length">Сколько букв с конца</param>
         /// <param name="stopAfter">Сколько нужно взять</param>
         /// <returns>Полученая подстрока</returns>
-        protected String Last(String word, int length, int stopAfter)
+        protected string Last(string word, int length, int stopAfter)
         {
-            String result;
-            int startIndex = word.Length - length;
-            
+            string result;
+            var startIndex = word.Length - length;
+
             if (startIndex >= 0)
-            {
                 result = word.Substring(word.Length - length, stopAfter);
-            }
             else
-            {
                 result = word;
-            }
-            
+
             return result;
         }
 
         /// <summary>
-        /// Над текущим словом выполняются правила в указаном порядке.
+        ///     Над текущим словом выполняются правила в указаном порядке.
         /// </summary>
         /// <param name="gender">Пол текущего слова</param>
         /// <param name="rulesArray">Порядок правил</param>
@@ -240,211 +238,183 @@ namespace NameCaseLib.Core
         {
             if (gender != Gender.Null)
             {
-                int rulesLength = rulesArray.Length;
-                String rulesName = (gender == Gender.Man ? "Man" : "Woman");
-                Type classType = this.GetType();
-                for (int i = 0; i < rulesLength; i++)
+                var rulesLength = rulesArray.Length;
+                var rulesName = gender == Gender.Man ? "Man" : "Woman";
+                var classType = GetType();
+                for (var i = 0; i < rulesLength; i++)
                 {
-                    String methodName = String.Format("{0}Rule{1}", rulesName, rulesArray[i]);
-                    bool res = (bool)classType.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance).Invoke(this, null);
-                    if (res)
-                    {
-                        return true;
-                    }
+                    var methodName = string.Format("{0}Rule{1}", rulesName, rulesArray[i]);
+                    var res = (bool) classType.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance)
+                        .Invoke(this, null);
+                    if (res) return true;
                 }
             }
+
             return false;
         }
 
         /// <summary>
-        /// Проверяет входит ли буква в список букв
+        ///     Проверяет входит ли буква в список букв
         /// </summary>
         /// <param name="needle">буква</param>
         /// <param name="letters">список букв</param>
         /// <returns>true если входит в список и false если не входит</returns>
-        protected bool In(String needle, String letters)
+        protected bool In(string needle, string letters)
         {
             if (needle != "")
-            {
                 if (letters.IndexOf(needle) >= 0)
-                {
                     return true;
-                }
-            }
             return false;
         }
 
         /// <summary>
-        /// Ищет окончание в списке окончаний
+        ///     Ищет окончание в списке окончаний
         /// </summary>
         /// <param name="needle">окончание</param>
         /// <param name="haystack">список окончаний</param>
         /// <returns>true если найдено и false если нет</returns>
-        protected bool In(String needle, String[] haystack)
+        protected bool In(string needle, string[] haystack)
         {
-            int length = haystack.Length;
+            var length = haystack.Length;
             if (needle != "")
-            {
-                for (int i = 0; i < length; i++)
-                {
+                for (var i = 0; i < length; i++)
                     if (haystack[i] == needle)
-                    {
                         return true;
-                    }
-                }
-            }
             return false;
         }
 
         /// <summary>
-        /// Проверяет равенство имени
+        ///     Проверяет равенство имени
         /// </summary>
         /// <param name="needle">имя</param>
         /// <param name="name">имя с которым сравнить</param>
         /// <returns>если имена совапали true</returns>
-        protected bool InNames(String needle, String name)
+        protected bool InNames(string needle, string name)
         {
             if (needle == name)
-            {
                 return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Проверяет входит ли имя в список имен
-        /// </summary>
-        /// <param name="needle">имя</param>
-        /// <param name="names">список имен</param>
-        /// <returns>true если входит</returns>
-        protected bool InNames(String needle, String[] names)
-        {
-            int length = names.Length;
-            for (int i = 0; i < length; i++)
-            {
-                if (needle == names[i])
-                {
-                    return true;
-                }
-            }
             return false;
         }
 
         /// <summary>
-        /// Склоняем слово во все падежи используя окончания
+        ///     Проверяет входит ли имя в список имен
+        /// </summary>
+        /// <param name="needle">имя</param>
+        /// <param name="names">список имен</param>
+        /// <returns>true если входит</returns>
+        protected bool InNames(string needle, string[] names)
+        {
+            var length = names.Length;
+            for (var i = 0; i < length; i++)
+                if (needle == names[i])
+                    return true;
+            return false;
+        }
+
+        /// <summary>
+        ///     Склоняем слово во все падежи используя окончания
         /// </summary>
         /// <param name="word">Слово</param>
         /// <param name="endings">окончания</param>
         /// <param name="replaceLast">сколько последних букв нужно убрать</param>
-        protected void WordForms(String word, String[] endings, int replaceLast)
+        protected void WordForms(string word, string[] endings, int replaceLast)
         {
             //Сохраняем именительный падеж
-            lastResult = new String[caseCount];
+            lastResult = new string[caseCount];
             lastResult[0] = workingWord;
 
             if (word.Length >= replaceLast)
-            {
-                //убираем лишние буквы
                 word = word.Substring(0, word.Length - replaceLast);
-            }
             else
-            {
                 word = "";
-            }
             //Приписуем окончания
-            for (int i = 1; i < caseCount; i++)
-            {
-                lastResult[i] = word + endings[i - 1];
-            }
+            for (var i = 1; i < caseCount; i++) lastResult[i] = word + endings[i - 1];
         }
 
         /// <summary>
-        /// Создает список слов во всех падежах используя окончания для каждого падежа
+        ///     Создает список слов во всех падежах используя окончания для каждого падежа
         /// </summary>
         /// <param name="word">слово</param>
         /// <param name="endings">окончания</param>
-        protected void WordForms(String word, String[] endings)
+        protected void WordForms(string word, string[] endings)
         {
             WordForms(word, endings, 0);
         }
 
         /// <summary>
-        /// Установить имя человека
+        ///     Установить имя человека
         /// </summary>
         /// <param name="name">Имя</param>
         /// <returns></returns>
-        public Core SetFirstName(String name)
+        public Core SetFirstName(string name)
         {
             if (name.Trim() != "")
             {
-                Word tmpWord = new Word(name);
+                var tmpWord = new Word(name);
                 tmpWord.NamePart = NamePart.FirstName;
                 words.AddWord(tmpWord);
                 NotReady();
             }
+
             return this;
         }
 
         /// <summary>
-        /// Установить фамилию человека
+        ///     Установить фамилию человека
         /// </summary>
         /// <param name="name">Фамилия</param>
         /// <returns></returns>
-        public Core SetSecondName(String name)
+        public Core SetSecondName(string name)
         {
             if (name.Trim() != "")
             {
-                Word tmpWord = new Word(name);
+                var tmpWord = new Word(name);
                 tmpWord.NamePart = NamePart.SecondName;
                 words.AddWord(tmpWord);
                 NotReady();
             }
+
             return this;
         }
 
         /// <summary>
-        /// Установить отчество человека
+        ///     Установить отчество человека
         /// </summary>
         /// <param name="name">Отчество</param>
         /// <returns></returns>
-        public Core SetFatherName(String name)
+        public Core SetFatherName(string name)
         {
             if (name.Trim() != "")
             {
-                Word tmpWord = new Word(name);
+                var tmpWord = new Word(name);
                 tmpWord.NamePart = NamePart.FatherName;
                 words.AddWord(tmpWord);
                 NotReady();
             }
+
             return this;
         }
 
         /// <summary>
-        /// Устанавливает пол человека
+        ///     Устанавливает пол человека
         /// </summary>
         /// <param name="gender">Пол человека</param>
         /// <returns></returns>
         public Core SetGender(Gender gender)
         {
-            int length = words.Length;
-            for (int i = 0; i < length; i++)
-            {
-                words.GetWord(i).Gender = gender;
-            }
+            var length = words.Length;
+            for (var i = 0; i < length; i++) words.GetWord(i).Gender = gender;
             return this;
         }
 
         /// <summary>
-        /// Устанавливает полное ФИО
+        ///     Устанавливает полное ФИО
         /// </summary>
         /// <param name="secondName">Фамилия</param>
         /// <param name="firstName">Имя</param>
         /// <param name="fatherName">Отчество</param>
         /// <returns></returns>
-        public Core SetFullName(String secondName, String firstName, String fatherName)
+        public Core SetFullName(string secondName, string firstName, string fatherName)
         {
             SetFirstName(firstName);
             SetSecondName(secondName);
@@ -453,117 +423,108 @@ namespace NameCaseLib.Core
         }
 
         /// <summary>
-        /// Установить имя человека
+        ///     Установить имя человека
         /// </summary>
         /// <param name="name">Имя</param>
         /// <returns></returns>
-        public Core SetName(String name)
+        public Core SetName(string name)
         {
             return SetFirstName(name);
         }
 
         /// <summary>
-        /// Установить фамилию человека
+        ///     Установить фамилию человека
         /// </summary>
         /// <param name="name">Фамилия</param>
         /// <returns></returns>
-        public Core SetLastName(String name)
+        public Core SetLastName(string name)
         {
             return SetSecondName(name);
         }
 
         /// <summary>
-        /// Установить фамилию человека
+        ///     Установить фамилию человека
         /// </summary>
         /// <param name="name">Фамилия</param>
         /// <returns></returns>
-        public Core SetSirName(String name)
+        public Core SetSirName(string name)
         {
             return SetSecondName(name);
         }
 
 
-
         /// <summary>
-        /// Идентификирует нужное слово
+        ///     Идентификирует нужное слово
         /// </summary>
         /// <param name="word">Слово</param>
         private void PrepareNamePart(Word word)
         {
-            if (word.NamePart == NamePart.Null)
-            {
-                DetectNamePart(word);
-            }
+            if (word.NamePart == NamePart.Null) DetectNamePart(word);
         }
 
         /// <summary>
-        /// Идентифицирует все существующие слова
+        ///     Идентифицирует все существующие слова
         /// </summary>
         private void PrepareAllNameParts()
         {
-            int length = words.Length;
-            for (int i = 0; i < length; i++)
-            {
-                PrepareNamePart(words.GetWord(i));
-            }
+            var length = words.Length;
+            for (var i = 0; i < length; i++) PrepareNamePart(words.GetWord(i));
         }
 
         /// <summary>
-        /// Предварительно определяет пол во слове
+        ///     Предварительно определяет пол во слове
         /// </summary>
         /// <param name="word">Слово для определения</param>
         private void PrepareGender(Word word)
         {
             if (!word.isGenderSolved())
-            {
                 switch (word.NamePart)
                 {
-                    case NamePart.FirstName: GenderByFirstName(word); break;
-                    case NamePart.SecondName: GenderBySecondName(word); break;
-                    case NamePart.FatherName: GenderByFatherName(word); break;
+                    case NamePart.FirstName:
+                        GenderByFirstName(word);
+                        break;
+                    case NamePart.SecondName:
+                        GenderBySecondName(word);
+                        break;
+                    case NamePart.FatherName:
+                        GenderByFatherName(word);
+                        break;
                 }
-            }
         }
 
         /// <summary>
-        /// Принимает решение о текущем поле человека
+        ///     Принимает решение о текущем поле человека
         /// </summary>
         private void SolveGender()
         {
             //Ищем, может гдето пол уже установлен
-            int length = words.Length;
-            for (int i = 0; i < length; i++)
-            {
+            var length = words.Length;
+            for (var i = 0; i < length; i++)
                 if (words.GetWord(i).isGenderSolved())
                 {
                     SetGender(words.GetWord(i).Gender);
                     return;
                 }
-            }
 
             //Если нет тогда определяем у каждого слова и потом сумируем
-            GenderProbability probability = new GenderProbability(0, 0);
+            var probability = new GenderProbability(0, 0);
 
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
             {
-                Word word = words.GetWord(i);
+                var word = words.GetWord(i);
                 PrepareGender(word);
                 probability = probability + word.GenderProbability;
             }
 
             if (probability.Man > probability.Woman)
-            {
                 SetGender(Gender.Man);
-            }
             else
-            {
                 SetGender(Gender.Woman);
-            }
         }
 
         /// <summary>
-        /// Выполнет все необходимые подготовления для склонения.
-        /// Все слова идентфицируются. Определяется пол.
+        ///     Выполнет все необходимые подготовления для склонения.
+        ///     Все слова идентфицируются. Определяется пол.
         /// </summary>
         private void PrepareEverything()
         {
@@ -576,71 +537,69 @@ namespace NameCaseLib.Core
         }
 
         /// <summary>
-        /// По указаным словам определяется пол человека
+        ///     По указаным словам определяется пол человека
         /// </summary>
         /// <returns>Пол человека</returns>
         public Gender GenderAutoDetect()
         {
             PrepareEverything();
             if (words.Length > 0)
-            {
                 return words.GetWord(0).Gender;
-            }
-            else
-            {
-                return Gender.Null;
-            }
+            return Gender.Null;
         }
 
         /// <summary>
-        /// Разделяет слова на части и готовит к подальшуму склонению
+        ///     Разделяет слова на части и готовит к подальшуму склонению
         /// </summary>
         /// <param name="fullname">Строка котороя содержит полное имя</param>
-        private void SplitFullName(String fullname)
+        private void SplitFullName(string fullname)
         {
-            String[] arr = fullname.Trim().Split(new Char[] {' '});
-            int length = arr.Length;
+            var arr = fullname.Trim().Split(' ');
+            var length = arr.Length;
 
             words = new WordArray();
-            for (int i = 0; i < length; i++)
-            {
+            for (var i = 0; i < length; i++)
                 if (arr[i] != "")
-                {
                     words.AddWord(new Word(arr[i]));
-                }
-            }
         }
 
         /// <summary>
-        /// Метод в разработке
+        ///     Метод в разработке
         /// </summary>
         /// <returns></returns>
-        public String GetFullNameFormat___DEV()
+        public string GetFullNameFormat___DEV()
         {
             return "";
         }
 
         /// <summary>
-        /// Склоняет слово по нужным правилам
+        ///     Склоняет слово по нужным правилам
         /// </summary>
         /// <param name="word">Слово</param>
         protected void WordCase(Word word)
         {
-            Gender gender = word.Gender;
-            String genderName = (gender == Gender.Man ? "Man" : "Woman");
+            var gender = word.Gender;
+            var genderName = gender == Gender.Man ? "Man" : "Woman";
 
-            String namePartName = "";
+            var namePartName = "";
             switch (word.NamePart)
             {
-                case NamePart.FirstName: namePartName = "First"; break;
-                case NamePart.SecondName: namePartName = "Second"; break;
-                case NamePart.FatherName: namePartName = "Father"; break;
+                case NamePart.FirstName:
+                    namePartName = "First";
+                    break;
+                case NamePart.SecondName:
+                    namePartName = "Second";
+                    break;
+                case NamePart.FatherName:
+                    namePartName = "Father";
+                    break;
             }
 
-            String methodName = genderName + namePartName + "Name";
+            var methodName = genderName + namePartName + "Name";
             SetWorkingWord(word.Name);
 
-            bool res = (bool)this.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance).Invoke(this, null);
+            var res = (bool) GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance)
+                .Invoke(this, null);
             if (res)
             {
                 word.NameCases = lastResult;
@@ -655,40 +614,37 @@ namespace NameCaseLib.Core
         }
 
         /// <summary>
-        /// Производит склонение всех слов
+        ///     Производит склонение всех слов
         /// </summary>
         private void AllWordCases()
         {
             if (!finished)
             {
                 PrepareEverything();
-                int length = words.Length;
-                
-                for (int i = 0; i < length; i++)
-                {
-                    WordCase(words.GetWord(i));
-                }
-                
+                var length = words.Length;
+
+                for (var i = 0; i < length; i++) WordCase(words.GetWord(i));
+
                 finished = true;
             }
         }
 
         /// <summary>
-        /// Возвращает масив который содержит все падежи имени
+        ///     Возвращает масив который содержит все падежи имени
         /// </summary>
         /// <returns>Возвращает массив со всеми падежами имени</returns>
-        public String[] GetFirstNameCase()
+        public string[] GetFirstNameCase()
         {
             AllWordCases();
             return words.GetByNamePart(NamePart.FirstName).NameCases;
         }
 
         /// <summary>
-        /// Возвращает имя в определенном падеже
+        ///     Возвращает имя в определенном падеже
         /// </summary>
         /// <param name="caseNum">Падеж</param>
         /// <returns>Имя в определенном падеже</returns>
-        public String GetFirstNameCase(Padeg caseNum)
+        public string GetFirstNameCase(Padeg caseNum)
         {
             AllWordCases();
             return words.GetByNamePart(NamePart.FirstName).GetNameCase(caseNum);
@@ -696,310 +652,278 @@ namespace NameCaseLib.Core
 
 
         /// <summary>
-        /// Возвращает масив который содержит все падежи фамилии
+        ///     Возвращает масив который содержит все падежи фамилии
         /// </summary>
         /// <returns>Возвращает массив со всеми падежами фамилии</returns>
-        public String[] GetSecondNameCase()
+        public string[] GetSecondNameCase()
         {
             AllWordCases();
             return words.GetByNamePart(NamePart.SecondName).NameCases;
         }
 
         /// <summary>
-        /// Возвращает фамилию в определенном падеже
+        ///     Возвращает фамилию в определенном падеже
         /// </summary>
         /// <param name="caseNum">Падеж</param>
         /// <returns>Фамилия в определенном падеже</returns>
-        public String GetSecondNameCase(Padeg caseNum)
+        public string GetSecondNameCase(Padeg caseNum)
         {
             AllWordCases();
             return words.GetByNamePart(NamePart.SecondName).GetNameCase(caseNum);
         }
 
         /// <summary>
-        /// Возвращает масив который содержит все падежи отчества
+        ///     Возвращает масив который содержит все падежи отчества
         /// </summary>
         /// <returns>Возвращает массив со всеми падежами отчества</returns>
-        public String[] GetFatherNameCase()
+        public string[] GetFatherNameCase()
         {
             AllWordCases();
             return words.GetByNamePart(NamePart.FatherName).NameCases;
         }
 
         /// <summary>
-        /// Возвращает отчество в определенном падеже
+        ///     Возвращает отчество в определенном падеже
         /// </summary>
         /// <param name="caseNum">Падеж</param>
         /// <returns>Отчество в определенном падеже</returns>
-        public String GetFatherNameCase(Padeg caseNum)
+        public string GetFatherNameCase(Padeg caseNum)
         {
             AllWordCases();
             return words.GetByNamePart(NamePart.FatherName).GetNameCase(caseNum);
         }
 
         /// <summary>
-        /// Выполняет склонение имени
+        ///     Выполняет склонение имени
         /// </summary>
         /// <param name="firstName">Имя</param>
         /// <param name="gender">Пол</param>
         /// <returns>Массив со всеми падежами</returns>
-        public String[] QFirstName(String firstName, Gender gender)
+        public string[] QFirstName(string firstName, Gender gender)
         {
             FullReset();
             SetFirstName(firstName);
-            if (gender != Gender.Null)
-            {
-                SetGender(gender);
-            }
+            if (gender != Gender.Null) SetGender(gender);
             return GetFirstNameCase();
         }
 
         /// <summary>
-        /// Выполняет склонение имени
+        ///     Выполняет склонение имени
         /// </summary>
         /// <param name="firstName">Имя</param>
         /// <returns>Массив со всеми падежами</returns>
-        public String[] QFirstName(String firstName)
+        public string[] QFirstName(string firstName)
         {
             return QFirstName(firstName, Gender.Null);
         }
 
         /// <summary>
-        /// Выполняет склонение имени
+        ///     Выполняет склонение имени
         /// </summary>
         /// <param name="firstName">Имя</param>
         /// <param name="caseNum">Падеж</param>
         /// <param name="gender">Пол</param>
         /// <returns>Имя в указаном падеже</returns>
-        public String QFirstName(String firstName, Padeg caseNum, Gender gender)
+        public string QFirstName(string firstName, Padeg caseNum, Gender gender)
         {
             FullReset();
             SetFirstName(firstName);
-            if (gender != Gender.Null)
-            {
-                SetGender(gender);
-            }
+            if (gender != Gender.Null) SetGender(gender);
             return GetFirstNameCase(caseNum);
         }
 
         /// <summary>
-        /// Выполняет склонение имени
+        ///     Выполняет склонение имени
         /// </summary>
         /// <param name="firstName">Имя</param>
         /// <param name="caseNum">Падеж</param>
         /// <returns>Имя в указаном падеже</returns>
-        public String QFirstName(String firstName, Padeg caseNum)
+        public string QFirstName(string firstName, Padeg caseNum)
         {
             return QFirstName(firstName, caseNum, Gender.Null);
         }
 
 
         /// <summary>
-        /// Выполняет склонение фамилии
+        ///     Выполняет склонение фамилии
         /// </summary>
         /// <param name="name">Фамилия</param>
         /// <param name="gender">Пол</param>
         /// <returns>Массив со всеми падежами</returns>
-        public String[] QSecondName(String name, Gender gender)
+        public string[] QSecondName(string name, Gender gender)
         {
             FullReset();
             SetSecondName(name);
-            if (gender != Gender.Null)
-            {
-                SetGender(gender);
-            }
+            if (gender != Gender.Null) SetGender(gender);
             return GetSecondNameCase();
         }
 
         /// <summary>
-        /// Выполняет склонение фамилии
+        ///     Выполняет склонение фамилии
         /// </summary>
         /// <param name="name">Фамилия</param>
         /// <returns>Массив со всеми падежами</returns>
-        public String[] QSecondName(String name)
+        public string[] QSecondName(string name)
         {
             return QSecondName(name, Gender.Null);
         }
 
         /// <summary>
-        /// Выполняет склонение фамилии
+        ///     Выполняет склонение фамилии
         /// </summary>
         /// <param name="name">Фамилия</param>
         /// <param name="caseNum">Падеж</param>
         /// <param name="gender">Пол</param>
         /// <returns>Фамилия в указаном падеже</returns>
-        public String QSecondName(String name, Padeg caseNum, Gender gender)
+        public string QSecondName(string name, Padeg caseNum, Gender gender)
         {
             FullReset();
             SetSecondName(name);
-            if (gender != Gender.Null)
-            {
-                SetGender(gender);
-            }
+            if (gender != Gender.Null) SetGender(gender);
             return GetSecondNameCase(caseNum);
         }
 
         /// <summary>
-        /// Выполняет склонение фамилии
+        ///     Выполняет склонение фамилии
         /// </summary>
         /// <param name="name">Фамилия</param>
         /// <param name="caseNum">Падеж</param>
         /// <returns>Фамилия в указаном падеже</returns>
-        public String QSecondName(String name, Padeg caseNum)
+        public string QSecondName(string name, Padeg caseNum)
         {
             return QSecondName(name, caseNum, Gender.Null);
         }
 
         /// <summary>
-        /// Выполняет склонение фамилии
+        ///     Выполняет склонение фамилии
         /// </summary>
         /// <param name="name">Фамилия</param>
         /// <param name="gender">Пол</param>
         /// <returns>Массив со всеми падежами</returns>
-        public String[] QFatherName(String name, Gender gender)
+        public string[] QFatherName(string name, Gender gender)
         {
             FullReset();
             SetFatherName(name);
-            if (gender != Gender.Null)
-            {
-                SetGender(gender);
-            }
+            if (gender != Gender.Null) SetGender(gender);
             return GetFatherNameCase();
         }
 
         /// <summary>
-        /// Выполняет склонение фамилии
+        ///     Выполняет склонение фамилии
         /// </summary>
         /// <param name="name">Фамилия</param>
         /// <returns>Массив со всеми падежами</returns>
-        public String[] QFatherName(String name)
+        public string[] QFatherName(string name)
         {
             return QFatherName(name, Gender.Null);
         }
 
         /// <summary>
-        /// Выполняет склонение фамилии
+        ///     Выполняет склонение отчества
         /// </summary>
-        /// <param name="name">Фамилия</param>
+        /// <param name="name">Отчество</param>
         /// <param name="caseNum">Падеж</param>
         /// <param name="gender">Пол</param>
-        /// <returns>Фамилия в указаном падеже</returns>
-        public String QFatherName(String name, Padeg caseNum, Gender gender)
+        /// <returns>Отчество в указаном падеже</returns>
+        public string QFatherName(string name, Padeg caseNum, Gender gender)
         {
             FullReset();
             SetFatherName(name);
-            if (gender != Gender.Null)
-            {
-                SetGender(gender);
-            }
+            if (gender != Gender.Null) SetGender(gender);
             return GetFatherNameCase(caseNum);
         }
 
         /// <summary>
-        /// Выполняет склонение фамилии
+        ///     Выполняет склонение фамилии
         /// </summary>
         /// <param name="name">Фамилия</param>
         /// <param name="caseNum">Падеж</param>
         /// <returns>Фамилия в указаном падеже</returns>
-        public String QFatherName(String name, Padeg caseNum)
+        public string QFatherName(string name, Padeg caseNum)
         {
             return QFatherName(name, caseNum, Gender.Null);
         }
 
         /// <summary>
-        /// Соединяет все слова которые есть в системе в одну строку в определенном падеже
+        ///     Соединяет все слова которые есть в системе в одну строку в определенном падеже
         /// </summary>
         /// <param name="caseNum">Падеж</param>
         /// <returns>Соедененая строка</returns>
-        private String ConnectedCase(Padeg caseNum)
+        private string ConnectedCase(Padeg caseNum)
         {
-            int length = words.Length;
-            String result = "";
-            for (int i = 0; i < length; i++)
-            {
-                result += words.GetWord(i).GetNameCase(caseNum) + " ";
-            }
+            var length = words.Length;
+            var result = "";
+            for (var i = 0; i < length; i++) result += words.GetWord(i).GetNameCase(caseNum) + " ";
             return result.TrimEnd();
         }
 
         /// <summary>
-        /// Соединяет все слова которые есть в системе в массив со всеми падежами
+        ///     Соединяет все слова которые есть в системе в массив со всеми падежами
         /// </summary>
         /// <returns>Массив со всеми падежами</returns>
-        private String[] ConnectedCases()
+        private string[] ConnectedCases()
         {
-            String[] res = new String[caseCount];
-            for (int i = 0; i < caseCount; i++)
-            {
-                res[i] = ConnectedCase((Padeg)i);
-            }
+            var res = new string[caseCount];
+            for (var i = 0; i < caseCount; i++) res[i] = ConnectedCase((Padeg) i);
 
             return res;
         }
 
         /// <summary>
-        /// Выполняет склонение полного имени
+        ///     Выполняет склонение полного имени
         /// </summary>
         /// <param name="fullName">Полное имя</param>
         /// <param name="gender">Пол</param>
         /// <returns>Массив со всеми падежами</returns>
-        public String[] Q(String fullName, Gender gender)
+        public string[] Q(string fullName, Gender gender)
         {
             FullReset();
             SplitFullName(fullName);
-            if (gender != Gender.Null)
-            {
-                SetGender(gender);
-            }
+            if (gender != Gender.Null) SetGender(gender);
             AllWordCases();
             return ConnectedCases();
         }
 
         /// <summary>
-        /// Выполняет склонение полного имени
+        ///     Выполняет склонение полного имени
         /// </summary>
         /// <param name="fullName">Полное имя</param>
         /// <returns>Массив со всеми падежами</returns>
-        public String[] Q(String fullName)
+        public string[] Q(string fullName)
         {
             return Q(fullName, Gender.Null);
         }
 
         /// <summary>
-        /// Выполняет склонение полного имени
+        ///     Выполняет склонение полного имени
         /// </summary>
         /// <param name="fullName">Полное имя</param>
         /// <param name="caseNum">Падеж</param>
         /// <param name="gender">Пол</param>
         /// <returns>Строка в указаном падеже</returns>
-        public String Q(String fullName, Padeg caseNum, Gender gender)
+        public string Q(string fullName, Padeg caseNum, Gender gender)
         {
             FullReset();
             SplitFullName(fullName);
-            if (gender != Gender.Null)
-            {
-                SetGender(gender);
-            }
+            if (gender != Gender.Null) SetGender(gender);
             AllWordCases();
             return ConnectedCase(caseNum);
         }
 
         /// <summary>
-        /// Выполняет склонение полного имени
+        ///     Выполняет склонение полного имени
         /// </summary>
         /// <param name="fullName">Полное имя</param>
         /// <param name="caseNum">Падеж</param>
         /// <returns>Строка в указаном падеже</returns>
-        public String Q(String fullName, Padeg caseNum)
+        public string Q(string fullName, Padeg caseNum)
         {
             return Q(fullName, caseNum, Gender.Null);
         }
 
 
-
-
         /// <summary>
-        /// Возвращает массив всех слов
+        ///     Возвращает массив всех слов
         /// </summary>
         /// <returns>Массив всех слов</returns>
         public WordArray GetWordsArray()
@@ -1009,87 +933,64 @@ namespace NameCaseLib.Core
 
 
         /// <summary>
-        /// Склонение имени по правилам мужских имен
+        ///     Склонение имени по правилам мужских имен
         /// </summary>
         /// <returns>true если склонение было произведено и false если правило не было найденым</returns>
-        abstract protected bool ManFirstName();
+        protected abstract bool ManFirstName();
 
         /// <summary>
-        /// Склонение имени по правилам женских имен
+        ///     Склонение имени по правилам женских имен
         /// </summary>
         /// <returns>true если склонение было произведено и false если правило не было найденым</returns>
-        abstract protected bool WomanFirstName();
+        protected abstract bool WomanFirstName();
 
         /// <summary>
-        /// Склонение фамилию по правилам мужских имен
+        ///     Склонение фамилию по правилам мужских имен
         /// </summary>
         /// <returns>true если склонение было произведено и false если правило не было найденым</returns>
-        abstract protected bool ManSecondName();
+        protected abstract bool ManSecondName();
 
         /// <summary>
-        /// Склонение фамилию по правилам женских имен
+        ///     Склонение фамилию по правилам женских имен
         /// </summary>
         /// <returns>true если склонение было произведено и false если правило не было найденым</returns>
-        abstract protected bool WomanSecondName();
+        protected abstract bool WomanSecondName();
 
         /// <summary>
-        /// Склонение отчества по правилам мужских имен
+        ///     Склонение отчества по правилам мужских имен
         /// </summary>
         /// <returns>true если склонение было произведено и false если правило не было найденым</returns>
-        abstract protected bool ManFatherName();
+        protected abstract bool ManFatherName();
 
         /// <summary>
-        /// Склонение отчества по правилам женских имен
+        ///     Склонение отчества по правилам женских имен
         /// </summary>
         /// <returns>true если склонение было произведено и false если правило не было найденым</returns>
-        abstract protected bool WomanFatherName();
+        protected abstract bool WomanFatherName();
 
         /// <summary>
-        /// Определяет пол человека по его имени
+        ///     Определяет пол человека по его имени
         /// </summary>
         /// <param name="word">Имя</param>
-        abstract protected void GenderByFirstName(Word word);
+        protected abstract void GenderByFirstName(Word word);
 
 
         /// <summary>
-        /// Определяет пол человека по его фамилии
+        ///     Определяет пол человека по его фамилии
         /// </summary>
         /// <param name="word">Фамилия</param>
-        abstract protected void GenderBySecondName(Word word);
+        protected abstract void GenderBySecondName(Word word);
 
         /// <summary>
-        /// Определяет пол человека по его отчеству
+        ///     Определяет пол человека по его отчеству
         /// </summary>
         /// <param name="word">Отчество</param>
-        abstract protected void GenderByFatherName(Word word);
+        protected abstract void GenderByFatherName(Word word);
 
         /// <summary>
-        /// Идетифицирует слово определяе имя это, или фамилия, или отчество 
+        ///     Идетифицирует слово определяе имя это, или фамилия, или отчество
         /// </summary>
         /// <param name="word">Слово для которое нужно идетифицировать</param>
-        abstract protected void DetectNamePart(Word word);  
-        
-        
-        /// <summary>
-        /// Возвращает текущую версию библиотке
-        /// </summary>
-        static public String Version
-        {
-            get
-            {
-                return version;
-            }
-        }
-
-        /// <summary>
-        /// Возвращает текущую версию языкового файла
-        /// </summary>
-        static public String LanguageVersion
-        {
-            get
-            {
-                return version;
-            }
-        }
+        protected abstract void DetectNamePart(Word word);
     }
 }
