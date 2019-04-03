@@ -1,5 +1,6 @@
-NameCaseLib.s*
 obj/
 Properties/
 bin/
 /.vs
+/NameCaseLib/.vs/NameCaseLib/v15/Server/sqlite3
+*.DotSettings.user
