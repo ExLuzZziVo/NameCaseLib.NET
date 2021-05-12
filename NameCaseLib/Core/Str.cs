@@ -15,7 +15,10 @@
         public static bool isLowerCase(string str)
         {
             if (str == str.ToLower())
+            {
                 return true;
+            }
+
             return false;
         }
     }

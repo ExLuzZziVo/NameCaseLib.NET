@@ -68,7 +68,6 @@ namespace NameCaseLib.Core
         /// </summary>
         protected string workingWord;
 
-
         /// <summary>
         ///     Возвращает текущую версию библиотке
         /// </summary>
@@ -106,6 +105,7 @@ namespace NameCaseLib.Core
             words = new WordArray();
             Reset();
             NotReady();
+
             return this;
         }
 
@@ -143,7 +143,11 @@ namespace NameCaseLib.Core
         protected void MakeResultTheSame()
         {
             lastResult = new string[caseCount];
-            for (var i = 0; i < caseCount; i++) lastResult[i] = workingWord;
+
+            for (var i = 0; i < caseCount; i++)
+            {
+                lastResult[i] = workingWord;
+            }
         }
 
         /// <summary>
@@ -154,13 +158,20 @@ namespace NameCaseLib.Core
         protected string Last(int length)
         {
             var result = workindLastCache.Get(length, length);
+
             if (result == "")
             {
                 var startIndex = workingWord.Length - length;
+
                 if (startIndex >= 0)
+                {
                     result = workingWord.Substring(workingWord.Length - length, length);
+                }
                 else
+                {
                     result = workingWord;
+                }
+
                 workindLastCache.Push(result, length, length);
             }
 
@@ -178,10 +189,15 @@ namespace NameCaseLib.Core
             string result;
 
             var startIndex = word.Length - length;
+
             if (startIndex >= 0)
+            {
                 result = word.Substring(word.Length - length, length);
+            }
             else
+            {
                 result = word;
+            }
 
             return result;
         }
@@ -195,13 +211,20 @@ namespace NameCaseLib.Core
         protected string Last(int length, int stopAfter)
         {
             var result = workindLastCache.Get(length, stopAfter);
+
             if (result == "")
             {
                 var startIndex = workingWord.Length - length;
+
                 if (startIndex >= 0)
+                {
                     result = workingWord.Substring(workingWord.Length - length, stopAfter);
+                }
                 else
+                {
                     result = workingWord;
+                }
+
                 workindLastCache.Push(result, length, stopAfter);
             }
 
@@ -221,9 +244,13 @@ namespace NameCaseLib.Core
             var startIndex = word.Length - length;
 
             if (startIndex >= 0)
+            {
                 result = word.Substring(word.Length - length, stopAfter);
+            }
             else
+            {
                 result = word;
+            }
 
             return result;
         }
@@ -241,12 +268,18 @@ namespace NameCaseLib.Core
                 var rulesLength = rulesArray.Length;
                 var rulesName = gender == Gender.Man ? "Man" : "Woman";
                 var classType = GetType();
+
                 for (var i = 0; i < rulesLength; i++)
                 {
                     var methodName = string.Format("{0}Rule{1}", rulesName, rulesArray[i]);
+
                     var res = (bool) classType.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance)
                         .Invoke(this, null);
-                    if (res) return true;
+
+                    if (res)
+                    {
+                        return true;
+                    }
                 }
             }
 
@@ -262,8 +295,13 @@ namespace NameCaseLib.Core
         protected bool In(string needle, string letters)
         {
             if (needle != "")
+            {
                 if (letters.IndexOf(needle) >= 0)
+                {
                     return true;
+                }
+            }
+
             return false;
         }
 
@@ -276,10 +314,18 @@ namespace NameCaseLib.Core
         protected bool In(string needle, string[] haystack)
         {
             var length = haystack.Length;
+
             if (needle != "")
+            {
                 for (var i = 0; i < length; i++)
+                {
                     if (haystack[i] == needle)
+                    {
                         return true;
+                    }
+                }
+            }
+
             return false;
         }
 
@@ -292,7 +338,10 @@ namespace NameCaseLib.Core
         protected bool InNames(string needle, string name)
         {
             if (needle == name)
+            {
                 return true;
+            }
+
             return false;
         }
 
@@ -305,9 +354,15 @@ namespace NameCaseLib.Core
         protected bool InNames(string needle, string[] names)
         {
             var length = names.Length;
+
             for (var i = 0; i < length; i++)
+            {
                 if (needle == names[i])
+                {
                     return true;
+                }
+            }
+
             return false;
         }
 
@@ -324,11 +379,19 @@ namespace NameCaseLib.Core
             lastResult[0] = workingWord;
 
             if (word.Length >= replaceLast)
+            {
                 word = word.Substring(0, word.Length - replaceLast);
+            }
             else
+            {
                 word = "";
+            }
+
             //Приписуем окончания
-            for (var i = 1; i < caseCount; i++) lastResult[i] = word + endings[i - 1];
+            for (var i = 1; i < caseCount; i++)
+            {
+                lastResult[i] = word + endings[i - 1];
+            }
         }
 
         /// <summary>
@@ -403,7 +466,12 @@ namespace NameCaseLib.Core
         public Core SetGender(Gender gender)
         {
             var length = words.Length;
-            for (var i = 0; i < length; i++) words.GetWord(i).Gender = gender;
+
+            for (var i = 0; i < length; i++)
+            {
+                words.GetWord(i).Gender = gender;
+            }
+
             return this;
         }
 
@@ -419,6 +487,7 @@ namespace NameCaseLib.Core
             SetFirstName(firstName);
             SetSecondName(secondName);
             SetFatherName(fatherName);
+
             return this;
         }
 
@@ -452,14 +521,16 @@ namespace NameCaseLib.Core
             return SetSecondName(name);
         }
 
-
         /// <summary>
         ///     Идентификирует нужное слово
         /// </summary>
         /// <param name="word">Слово</param>
         private void PrepareNamePart(Word word)
         {
-            if (word.NamePart == NamePart.Null) DetectNamePart(word);
+            if (word.NamePart == NamePart.Null)
+            {
+                DetectNamePart(word);
+            }
         }
 
         /// <summary>
@@ -468,7 +539,11 @@ namespace NameCaseLib.Core
         private void PrepareAllNameParts()
         {
             var length = words.Length;
-            for (var i = 0; i < length; i++) PrepareNamePart(words.GetWord(i));
+
+            for (var i = 0; i < length; i++)
+            {
+                PrepareNamePart(words.GetWord(i));
+            }
         }
 
         /// <summary>
@@ -478,18 +553,23 @@ namespace NameCaseLib.Core
         private void PrepareGender(Word word)
         {
             if (!word.isGenderSolved())
+            {
                 switch (word.NamePart)
                 {
                     case NamePart.FirstName:
                         GenderByFirstName(word);
+
                         break;
                     case NamePart.SecondName:
                         GenderBySecondName(word);
+
                         break;
                     case NamePart.FatherName:
                         GenderByFatherName(word);
+
                         break;
                 }
+            }
         }
 
         /// <summary>
@@ -499,12 +579,16 @@ namespace NameCaseLib.Core
         {
             //Ищем, может гдето пол уже установлен
             var length = words.Length;
+
             for (var i = 0; i < length; i++)
+            {
                 if (words.GetWord(i).isGenderSolved())
                 {
                     SetGender(words.GetWord(i).Gender);
+
                     return;
                 }
+            }
 
             //Если нет тогда определяем у каждого слова и потом сумируем
             var probability = new GenderProbability(0, 0);
@@ -517,9 +601,13 @@ namespace NameCaseLib.Core
             }
 
             if (probability.Man > probability.Woman)
+            {
                 SetGender(Gender.Man);
+            }
             else
+            {
                 SetGender(Gender.Woman);
+            }
         }
 
         /// <summary>
@@ -543,8 +631,12 @@ namespace NameCaseLib.Core
         public Gender GenderAutoDetect()
         {
             PrepareEverything();
+
             if (words.Length > 0)
+            {
                 return words.GetWord(0).Gender;
+            }
+
             return Gender.Null;
         }
 
@@ -558,9 +650,14 @@ namespace NameCaseLib.Core
             var length = arr.Length;
 
             words = new WordArray();
+
             for (var i = 0; i < length; i++)
+            {
                 if (arr[i] != "")
+                {
                     words.AddWord(new Word(arr[i]));
+                }
+            }
         }
 
         /// <summary>
@@ -582,16 +679,20 @@ namespace NameCaseLib.Core
             var genderName = gender == Gender.Man ? "Man" : "Woman";
 
             var namePartName = "";
+
             switch (word.NamePart)
             {
                 case NamePart.FirstName:
                     namePartName = "First";
+
                     break;
                 case NamePart.SecondName:
                     namePartName = "Second";
+
                     break;
                 case NamePart.FatherName:
                     namePartName = "Father";
+
                     break;
             }
 
@@ -600,6 +701,7 @@ namespace NameCaseLib.Core
 
             var res = (bool) GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance)
                 .Invoke(this, null);
+
             if (res)
             {
                 word.NameCases = lastResult;
@@ -623,7 +725,10 @@ namespace NameCaseLib.Core
                 PrepareEverything();
                 var length = words.Length;
 
-                for (var i = 0; i < length; i++) WordCase(words.GetWord(i));
+                for (var i = 0; i < length; i++)
+                {
+                    WordCase(words.GetWord(i));
+                }
 
                 finished = true;
             }
@@ -636,6 +741,7 @@ namespace NameCaseLib.Core
         public string[] GetFirstNameCase()
         {
             AllWordCases();
+
             return words.GetByNamePart(NamePart.FirstName).NameCases;
         }
 
@@ -647,9 +753,9 @@ namespace NameCaseLib.Core
         public string GetFirstNameCase(Padeg caseNum)
         {
             AllWordCases();
+
             return words.GetByNamePart(NamePart.FirstName).GetNameCase(caseNum);
         }
-
 
         /// <summary>
         ///     Возвращает масив который содержит все падежи фамилии
@@ -658,6 +764,7 @@ namespace NameCaseLib.Core
         public string[] GetSecondNameCase()
         {
             AllWordCases();
+
             return words.GetByNamePart(NamePart.SecondName).NameCases;
         }
 
@@ -669,6 +776,7 @@ namespace NameCaseLib.Core
         public string GetSecondNameCase(Padeg caseNum)
         {
             AllWordCases();
+
             return words.GetByNamePart(NamePart.SecondName).GetNameCase(caseNum);
         }
 
@@ -679,6 +787,7 @@ namespace NameCaseLib.Core
         public string[] GetFatherNameCase()
         {
             AllWordCases();
+
             return words.GetByNamePart(NamePart.FatherName).NameCases;
         }
 
@@ -690,6 +799,7 @@ namespace NameCaseLib.Core
         public string GetFatherNameCase(Padeg caseNum)
         {
             AllWordCases();
+
             return words.GetByNamePart(NamePart.FatherName).GetNameCase(caseNum);
         }
 
@@ -703,7 +813,12 @@ namespace NameCaseLib.Core
         {
             FullReset();
             SetFirstName(firstName);
-            if (gender != Gender.Null) SetGender(gender);
+
+            if (gender != Gender.Null)
+            {
+                SetGender(gender);
+            }
+
             return GetFirstNameCase();
         }
 
@@ -728,7 +843,12 @@ namespace NameCaseLib.Core
         {
             FullReset();
             SetFirstName(firstName);
-            if (gender != Gender.Null) SetGender(gender);
+
+            if (gender != Gender.Null)
+            {
+                SetGender(gender);
+            }
+
             return GetFirstNameCase(caseNum);
         }
 
@@ -743,7 +863,6 @@ namespace NameCaseLib.Core
             return QFirstName(firstName, caseNum, Gender.Null);
         }
 
-
         /// <summary>
         ///     Выполняет склонение фамилии
         /// </summary>
@@ -754,7 +873,12 @@ namespace NameCaseLib.Core
         {
             FullReset();
             SetSecondName(name);
-            if (gender != Gender.Null) SetGender(gender);
+
+            if (gender != Gender.Null)
+            {
+                SetGender(gender);
+            }
+
             return GetSecondNameCase();
         }
 
@@ -779,7 +903,12 @@ namespace NameCaseLib.Core
         {
             FullReset();
             SetSecondName(name);
-            if (gender != Gender.Null) SetGender(gender);
+
+            if (gender != Gender.Null)
+            {
+                SetGender(gender);
+            }
+
             return GetSecondNameCase(caseNum);
         }
 
@@ -804,7 +933,12 @@ namespace NameCaseLib.Core
         {
             FullReset();
             SetFatherName(name);
-            if (gender != Gender.Null) SetGender(gender);
+
+            if (gender != Gender.Null)
+            {
+                SetGender(gender);
+            }
+
             return GetFatherNameCase();
         }
 
@@ -829,7 +963,12 @@ namespace NameCaseLib.Core
         {
             FullReset();
             SetFatherName(name);
-            if (gender != Gender.Null) SetGender(gender);
+
+            if (gender != Gender.Null)
+            {
+                SetGender(gender);
+            }
+
             return GetFatherNameCase(caseNum);
         }
 
@@ -853,7 +992,12 @@ namespace NameCaseLib.Core
         {
             var length = words.Length;
             var result = "";
-            for (var i = 0; i < length; i++) result += words.GetWord(i).GetNameCase(caseNum) + " ";
+
+            for (var i = 0; i < length; i++)
+            {
+                result += words.GetWord(i).GetNameCase(caseNum) + " ";
+            }
+
             return result.TrimEnd();
         }
 
@@ -864,7 +1008,11 @@ namespace NameCaseLib.Core
         private string[] ConnectedCases()
         {
             var res = new string[caseCount];
-            for (var i = 0; i < caseCount; i++) res[i] = ConnectedCase((Padeg) i);
+
+            for (var i = 0; i < caseCount; i++)
+            {
+                res[i] = ConnectedCase((Padeg) i);
+            }
 
             return res;
         }
@@ -879,8 +1027,14 @@ namespace NameCaseLib.Core
         {
             FullReset();
             SplitFullName(fullName);
-            if (gender != Gender.Null) SetGender(gender);
+
+            if (gender != Gender.Null)
+            {
+                SetGender(gender);
+            }
+
             AllWordCases();
+
             return ConnectedCases();
         }
 
@@ -905,8 +1059,14 @@ namespace NameCaseLib.Core
         {
             FullReset();
             SplitFullName(fullName);
-            if (gender != Gender.Null) SetGender(gender);
+
+            if (gender != Gender.Null)
+            {
+                SetGender(gender);
+            }
+
             AllWordCases();
+
             return ConnectedCase(caseNum);
         }
 
@@ -921,7 +1081,6 @@ namespace NameCaseLib.Core
             return Q(fullName, caseNum, Gender.Null);
         }
 
-
         /// <summary>
         ///     Возвращает массив всех слов
         /// </summary>
@@ -930,7 +1089,6 @@ namespace NameCaseLib.Core
         {
             return words;
         }
-
 
         /// <summary>
         ///     Склонение имени по правилам мужских имен
@@ -973,7 +1131,6 @@ namespace NameCaseLib.Core
         /// </summary>
         /// <param name="word">Имя</param>
         protected abstract void GenderByFirstName(Word word);
-
 
         /// <summary>
         ///     Определяет пол человека по его фамилии

@@ -53,7 +53,11 @@ namespace NameCaseLib.Core
         /// <param name="word">Слово</param>
         public void AddWord(Word word)
         {
-            if (Length >= capacity) EnlargeArray();
+            if (Length >= capacity)
+            {
+                EnlargeArray();
+            }
+
             words[Length] = word;
             Length++;
         }
@@ -66,8 +70,13 @@ namespace NameCaseLib.Core
         public Word GetByNamePart(NamePart namePart)
         {
             for (var i = 0; i < Length; i++)
+            {
                 if (words[i].NamePart == namePart)
+                {
                     return words[i];
+                }
+            }
+
             return new Word("");
         }
     }

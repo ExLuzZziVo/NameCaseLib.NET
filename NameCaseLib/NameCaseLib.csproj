@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net40</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net40</TargetFrameworks>
     <Authors>Andriy Chaika</Authors>
     <PackageLicenseUrl>https://github.com/seagullua/NameCaseLib.NET/blob/master/MIT-LICENSE</PackageLicenseUrl>
     <Copyright>Copyright ©  2011</Copyright>

@@ -85,10 +85,17 @@ namespace NameCaseLib.Core
             get
             {
                 if (genderSolved == Gender.Null)
+                {
                     if (manOrWoman.Man > manOrWoman.Woman)
+                    {
                         genderSolved = Gender.Man;
+                    }
                     else
+                    {
                         genderSolved = Gender.Woman;
+                    }
+                }
+
                 return genderSolved;
             }
             set => genderSolved = value;
@@ -141,6 +148,7 @@ namespace NameCaseLib.Core
             for (var i = 0; i < length; i++)
             {
                 var letter = word.Substring(i, 1);
+
                 if (Str.isLowerCase(letter))
                 {
                     isUpperCase = false;
@@ -159,24 +167,38 @@ namespace NameCaseLib.Core
         private void ReturnMask()
         {
             var wordCount = nameCases.Length;
+
             if (isUpperCase)
+            {
                 for (var i = 0; i < wordCount; i++)
+                {
                     nameCases[i] = nameCases[i].ToUpper();
+                }
+            }
             else
+            {
                 for (var i = 0; i < wordCount; i++)
                 {
                     var lettersCount = nameCases[i].Length;
                     var maskLength = letterMask.Length;
                     var newStr = "";
+
                     for (var letter = 0; letter < lettersCount; letter++)
+                    {
                         if (letter < maskLength && letterMask[letter] == LettersMask.X)
+                        {
                             newStr += nameCases[i].Substring(letter, 1).ToUpper();
+                        }
                         else
+                        {
                             newStr += nameCases[i].Substring(letter, 1);
+                        }
+                    }
+
                     nameCases[i] = newStr;
                 }
+            }
         }
-
 
         /// <summary>
         ///     Возвращает строку с нужным падежом текущего слова
@@ -195,7 +217,11 @@ namespace NameCaseLib.Core
         /// <returns>true если определен и false если нет</returns>
         public bool isGenderSolved()
         {
-            if (genderSolved == Gender.Null) return false;
+            if (genderSolved == Gender.Null)
+            {
+                return false;
+            }
+
             return true;
         }
     }

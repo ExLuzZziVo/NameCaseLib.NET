@@ -20,9 +20,7 @@
         ///     Создание пустного объекта для подальшего накопления вероятностей
         /// </summary>
         public GenderProbability()
-            : this(0, 0)
-        {
-        }
+            : this(0, 0) { }
 
         /// <summary>
         ///     Получить/Укзать вероятность мужского пола
@@ -45,6 +43,7 @@
             var result = new GenderProbability(0, 0);
             result.Man = number.Man + add.Man;
             result.Woman = number.Woman + add.Woman;
+
             return result;
         }
     }
